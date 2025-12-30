@@ -50,34 +50,6 @@
     <div v-if="characters.length > 0">
       <DungeonChart :characters="characters" :days="selectedDays" />
       
-      <div class="log-controls">
-        <button class="log-btn" @click="showLogs = !showLogs">
-          {{ showLogs ? 'Hide Log' : 'Log' }}
-        </button>
-      </div>
-
-      <div v-if="showLogs" class="log-section">
-        <h3>Session API Activity</h3>
-        <table class="log-table">
-          <thead>
-            <tr>
-              <th>Date & Time</th>
-              <th>Endpoint</th>
-              <th>Size (KB)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(log, idx) in apiLogs" :key="idx">
-              <td>{{ log.timestamp }}</td>
-              <td class="endpoint-cell" :title="log.url">{{ log.url }}</td>
-              <td>{{ log.sizeKB }} KB</td>
-            </tr>
-            <tr v-if="apiLogs.length === 0">
-              <td colspan="3" class="no-logs">No requests logged yet.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
     <div v-else>
       <p>Add a character to see stats.</p>
@@ -103,8 +75,6 @@ export default {
       error: null,
       selectedDays: 7,
       allRealms: realmData,
-      apiLogs: [],
-      showLogs: false
     }
   },
   computed: {
@@ -157,15 +127,7 @@ export default {
            throw new Error(errData.message || 'Failed to fetch character data');
         }
         
-        const rawData = await response.text();
-        const data = JSON.parse(rawData);
-        const sizeKB = (new Blob([rawData]).size / 1024).toFixed(2);
-        
-        this.apiLogs.push({
-          timestamp: new Date().toLocaleString(),
-          url: url,
-          sizeKB: sizeKB
-        });
+        const data = await response.json();
         
         // Extract score if available
         let score = 0;
@@ -407,85 +369,6 @@ h1 {
 }
 
 
-.log-controls {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-}
-
-.log-btn {
-  background: transparent;
-  color: #888;
-  border: 1px solid #444;
-  padding: 8px 24px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.log-btn:hover {
-  border-color: #666;
-  color: #eee;
-  background: rgba(255,255,255,0.05);
-}
-
-.log-section {
-  margin-top: 20px;
-  padding: 20px;
-  background: #1a1a1a;
-  border-radius: 12px;
-  border: 1px solid #333;
-  animation: fadeIn 0.3s ease-out;
-}
-
-.log-section h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-  color: #aaa;
-}
-
-.log-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  color: #ccc;
-}
-
-.log-table th {
-  text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid #333;
-  color: #888;
-  font-weight: 600;
-}
-
-.log-table td {
-  padding: 12px;
-  border-bottom: 1px solid #222;
-}
-
-.endpoint-cell {
-  max-width: 400px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: #4a6fa5;
-}
-
-.no-logs {
-  text-align: center;
-  padding: 20px !important;
-  color: #555;
-  font-style: italic;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
