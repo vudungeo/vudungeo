@@ -61,6 +61,7 @@
 import DungeonChart from '../components/DungeonChart.vue'
 import SearchableSelect from '../components/SearchableSelect.vue'
 import realmData from '../assets/realms.json'
+import { REGION_OPTIONS, DEFAULT_REGION, DEFAULT_DAYS, API } from '../constants'
 
 export default {
   name: 'Stats',
@@ -70,19 +71,16 @@ export default {
       characters: [], 
       newCharName: '',
       newCharRealm: '',
-      newCharRegion: 'eu',
+      newCharRegion: DEFAULT_REGION,
       loading: false,
       error: null,
-      selectedDays: 7,
+      selectedDays: DEFAULT_DAYS,
       allRealms: realmData,
     }
   },
   computed: {
     regionOptions() {
-      return [
-        { label: 'Europe (EU)', value: 'eu' },
-        { label: 'Americas (US)', value: 'us' }
-      ];
+      return REGION_OPTIONS;
     },
     realmOptions() {
       const region = this.newCharRegion;
@@ -118,7 +116,7 @@ export default {
       this.error = null;
       
       try {
-        const url = `https://raider.io/api/v1/characters/profile?region=${this.newCharRegion}&realm=${this.newCharRealm}&name=${this.newCharName}&fields=mythic_plus_recent_runs,mythic_plus_scores_by_season:current`;
+        const url = `${API.BASE_URL}${API.CHARACTER_PROFILE_PATH}?region=${this.newCharRegion}&realm=${this.newCharRealm}&name=${this.newCharName}&fields=${API.FIELDS}`;
         const response = await fetch(url)
         
         if (!response.ok) {
