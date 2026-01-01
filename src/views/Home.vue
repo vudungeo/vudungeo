@@ -8,7 +8,7 @@
     </div>
 
     <div class="version-badge">
-      v{{ appVersion }}
+      v{{ appVersion }} © {{ currentYear }}
     </div>
   </div>
 </template>
@@ -18,7 +18,8 @@ export default {
   name: 'Home',
   data() {
     return {
-      appVersion: __APP_VERSION__
+      appVersion: __APP_VERSION__,
+      currentYear: new Date().getFullYear()
     }
   }
 }
