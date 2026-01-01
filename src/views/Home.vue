@@ -6,12 +6,21 @@
     <div class="nav-button">
       <button @click="$router.push('/stats')">Dungeons</button>
     </div>
+
+    <div class="version-badge">
+      v{{ appVersion }}
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Home',
+  data() {
+    return {
+      appVersion: __APP_VERSION__
+    }
+  }
 }
 </script>
 
@@ -27,4 +36,14 @@ export default {
   z-index: 10;
 }
 /* Re-using global styles from style.css for lion, but ensuring container alignment */
+.version-badge {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  font-size: 0.75rem;
+  color: #666;
+  font-family: 'Inter', sans-serif;
+  opacity: 0.8;
+  pointer-events: none;
+}
 </style>
