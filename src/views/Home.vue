@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <div class="battle-container">
+      <img src="/battle_animation.png" alt="Warcraft Battle" class="battle-img" />
+    </div>
     <h1>vudungeo</h1>
 
     
@@ -14,17 +17,3 @@ export default {
   name: 'Home'
 }
 </script>
-
-<style scoped>
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 50px;
-}
-.nav-button {
-  margin-top: 80px; 
-  z-index: 10;
-}
-/* Re-using global styles from style.css for lion, but ensuring container alignment */
-</style>
