@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     host: true,
-    port: 3000,
+    port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
     proxy: {
       '/api': {
         target: 'https://raider.io',
