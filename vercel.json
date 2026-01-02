@@ -1,8 +1,12 @@
 {
     "rewrites": [
         {
+            "source": "/local/:path*",
+            "destination": "/api/server"
+        },
+        {
             "source": "/api/:path*",
-            "destination": "https://raider.io/:path*"
+            "destination": "https://raider.io/api/:path*"
         },
         {
             "source": "/((?!api/).*)",
