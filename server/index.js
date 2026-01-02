@@ -16,10 +16,6 @@ app.use(express.json());
 
 // Log incoming requests
 app.use((req, res, next) => {
-    // Strip /local prefix if present (for Vercel rewrites)
-    if (req.url.startsWith('/local')) {
-        req.url = req.url.replace(/^\/local/, '');
-    }
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
