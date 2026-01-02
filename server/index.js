@@ -91,9 +91,18 @@ app.get('/api/v1/characters', async (req, res) => {
         // Map raw_data back to objects
         const formatted = characters.map(c => {
             try {
+                let rawData = c.raw_data;
+                // Handle double-stringified data from old SQLite or old Postgres inserts
+                if (typeof rawData === 'string') {
+                    rawData = JSON.parse(rawData);
+                    // Check if it's still a string (double-stringified)
+                    if (typeof rawData === 'string') {
+                        rawData = JSON.parse(rawData);
+                    }
+                }
                 return {
                     ...c,
-                    raw_data: typeof c.raw_data === 'string' ? JSON.parse(c.raw_data) : c.raw_data
+                    raw_data: rawData
                 };
             } catch (e) {
                 logger.logError(`Failed to parse raw_data for character ${c.id}`, e);
@@ -122,9 +131,18 @@ app.get('/api/v1/characters/:region/:realm/:name', async (req, res) => {
             return res.status(404).json({ message: 'Character not found in local archive' });
         }
 
+        let rawData = character.raw_data;
+        // Handle double-stringified data from old inserts
+        if (typeof rawData === 'string') {
+            rawData = JSON.parse(rawData);
+            if (typeof rawData === 'string') {
+                rawData = JSON.parse(rawData);
+            }
+        }
+
         res.json({
             ...character,
-            raw_data: typeof character.raw_data === 'string' ? JSON.parse(character.raw_data) : character.raw_data
+            raw_data: rawData
         });
     } catch (error) {
         logger.logError('Lookup Error (GET /characters/:region/:realm/:name)', error, { region, realm, name });
@@ -152,7 +170,7 @@ app.post('/api/v1/characters', async (req, res) => {
                 region: data.region || 'eu',
                 score: score,
                 last_crawled_at: data.last_crawled_at,
-                raw_data: JSON.stringify(data)
+                raw_data: data  // Postgres json column accepts objects directly
             })
             .onConflict(['name', 'realm', 'region'])
             .merge();
