@@ -19,31 +19,63 @@ export default {
       required: true
     },
     days: {
-      type: Number,
+      type: [Number, String],
       default: 7
+    }
+  },
+  methods: {
+    formatDate(date) {
+      if (!date) return ''
+      const d = new Date(date)
+      const year = d.getFullYear()
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
     }
   },
   computed: {
     chartData() {
-      // Get all unique dates from all characters' runs
-      const allDates = new Set()
-      const cutoff = new Date()
-      cutoff.setDate(cutoff.getDate() - this.days)
-      const cutoffTime = cutoff.getTime()
-
-      // Generate date labels for the selected range (last N days)
-      const labels = []
       const today = new Date()
-      for (let i = this.days - 1; i >= 0; i--) {
-        const d = new Date()
-        d.setDate(today.getDate() - i)
-        const dateStr = d.toISOString().split('T')[0]
-        labels.push(dateStr)
+      let labels = []
+      let cutoffTime = 0
+
+      if (this.days === 'all') {
+        const allRunDates = this.characters.flatMap(char => 
+          (char.runs || []).map(run => new Date(run.completed_at).getTime())
+        )
+
+        if (allRunDates.length > 0) {
+          const minTime = Math.min(...allRunDates)
+          const maxTime = Math.max(...allRunDates)
+          
+          const startDate = new Date(minTime)
+          startDate.setHours(0, 0, 0, 0)
+          const endDate = new Date(maxTime)
+          endDate.setHours(23, 59, 59, 999)
+
+          const current = new Date(startDate)
+          while (current <= endDate) {
+            labels.push(this.formatDate(current))
+            current.setDate(current.getDate() + 1)
+          }
+        }
+      } else {
+        const daysNum = parseInt(this.days)
+        const cutoff = new Date()
+        cutoff.setDate(today.getDate() - daysNum)
+        cutoffTime = cutoff.getTime()
+
+        for (let i = daysNum - 1; i >= 0; i--) {
+          const d = new Date()
+          d.setDate(today.getDate() - i)
+          labels.push(this.formatDate(d))
+        }
       }
 
       const datasets = this.characters.map(char => {
         // Filter runs for this character within time range
-        const recentRuns = (char.runs || []).filter(run => new Date(run.completed_at).getTime() >= cutoffTime)
+        const runs = char.runs || []
+        const recentRuns = this.days === 'all' ? runs : runs.filter(run => new Date(run.completed_at).getTime() >= cutoffTime)
         
         // Count runs per date and store details
         const counts = {}
@@ -54,11 +86,9 @@ export default {
         })
         
         recentRuns.forEach(run => {
-          const dateStr = new Date(run.completed_at).toISOString().split('T')[0]
+          const dateStr = this.formatDate(run.completed_at)
           if (counts[dateStr] !== undefined) {
             counts[dateStr]++
-            // Access nested dungeon properties correctly: run.dungeon is the name, run.mythic_level is the level
-            // Based on Raider.IO API structure: run.dungeon (string), run.mythic_level (number)
             details[dateStr].push(`${run.short_name || run.dungeon} +${run.mythic_level}`)
           }
         })

@@ -8,6 +8,7 @@
     
     <div class="nav-button">
       <button @click="$router.push('/stats')">Dungeons</button>
+      <button class="doc-btn" @click="$router.push('/api-docs')">API Docs</button>
     </div>
   </div>
 </template>
@@ -29,6 +30,18 @@ export default {
 .nav-button {
   margin-top: 80px; 
   z-index: 10;
+  display: flex;
+  gap: 20px;
+}
+
+.doc-btn {
+  background: transparent;
+  border: 1px solid #ffbd0a;
+  color: #ffbd0a;
+}
+
+.doc-btn:hover {
+  background: rgba(255, 189, 10, 0.1);
 }
 
 .battle-container {

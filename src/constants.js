@@ -13,3 +13,8 @@ export const API = {
     CHARACTER_PROFILE_PATH: '/api/v1/characters/profile',
     FIELDS: 'mythic_plus_recent_runs,mythic_plus_scores_by_season:current'
 };
+
+export const LOCAL_API = {
+    BASE_URL: '/local',
+    CHARACTERS_PATH: '/api/v1/characters'
+};
