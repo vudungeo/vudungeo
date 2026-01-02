@@ -8,6 +8,7 @@
     
     <div class="nav-button">
       <button @click="$router.push('/stats')">Dungeons</button>
+      <button @click="$router.push('/logs')">Logs</button>
       <button class="doc-btn" @click="$router.push('/api-docs')">API Docs</button>
     </div>
   </div>

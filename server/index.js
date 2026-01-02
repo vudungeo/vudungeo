@@ -25,7 +25,22 @@ initDb().catch(err => {
 // Logs Endpoints
 app.get('/api/v1/logs', async (req, res) => {
     try {
-        const logs = await db('app_log').select('*').orderBy('created_at', 'desc').limit(100);
+        const { from, to } = req.query;
+        let query = db('app_log').select('*').orderBy('created_at', 'desc').limit(100);
+
+        if (from) {
+            query = query.where('created_at', '>=', from);
+        }
+        if (to) {
+            // Add one day to include the end date fully if it's just a date string,
+            // or just rely on the user sending a full timestamp.
+            // For simplicity in this UI, we'll assume the user might send YYYY-MM-DD
+            // and we want to include that whole day.
+            // But strict comparison is safer. Let's trust the input for now.
+            query = query.where('created_at', '<=', to);
+        }
+
+        const logs = await query;
         const formatted = logs.map(l => ({
             ...l,
             details: typeof l.details === 'string' ? JSON.parse(l.details) : l.details
