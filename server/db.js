@@ -19,7 +19,7 @@ async function initDb() {
                 table.float('score');
                 table.timestamp('last_crawled_at');
                 table.json('raw_data');
-                // knex.fn.now() works for both SQLite and Postgres
+                // knex.fn.now() works for Postgres
                 table.timestamp('created_at').defaultTo(db.fn.now());
                 table.unique(['name', 'realm', 'region']);
             });

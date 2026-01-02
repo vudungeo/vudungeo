@@ -7,7 +7,7 @@
         <label for="source-filter">Data Source: </label>
         <select id="source-filter" v-model="dataSource" @change="handleSourceChange">
           <option value="live">Live (Raider.io)</option>
-          <option value="archive">Local Archive (SQLite)</option>
+          <option value="archive">Local Archive (DB)</option>
         </select>
       </div>
       <div class="filter-group">
