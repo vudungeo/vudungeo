@@ -1,8 +1,8 @@
 {
     "rewrites": [
         {
-            "source": "/local/:path*",
-            "destination": "/api/server"
+            "source": "/local(.*)",
+            "destination": "/api/server/local$1"
         },
         {
             "source": "/api/:path*",
