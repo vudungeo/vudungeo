@@ -1,26 +1,11 @@
 const knex = require('knex');
 const path = require('path');
 
-const isPostgres = !!process.env.POSTGRES_URL;
-
-let db;
-if (isPostgres) {
-    db = knex({
-        client: 'pg',
-        connection: process.env.POSTGRES_URL + "?sslmode=require", // Vercel Postgres usually requires SSL
-        searchPath: ['knex', 'public'],
-    });
-} else {
-    // Local SQLite fallback
-    const dbPath = path.resolve(__dirname, 'vudungeo.sqlite');
-    db = knex({
-        client: 'sqlite3',
-        connection: {
-            filename: dbPath,
-        },
-        useNullAsDefault: true,
-    });
-}
+const db = knex({
+    client: 'pg',
+    connection: process.env.POSTGRES_URL + "?sslmode=require",
+    searchPath: ['knex', 'public'],
+});
 
 async function initDb() {
     try {
