@@ -1,10 +1,27 @@
 const knex = require('knex');
 const path = require('path');
 
+// Properly handle POSTGRES_URL - Vercel Postgres already includes sslmode in the connection string
+// If it doesn't have it, we need to add it, but we shouldn't double-add query params
+let connectionString = process.env.POSTGRES_URL;
+
+if (!connectionString) {
+    throw new Error('POSTGRES_URL environment variable is not set');
+}
+
+// Only add sslmode if it's not already in the connection string
+if (!connectionString.includes('sslmode=')) {
+    connectionString += connectionString.includes('?') ? '&sslmode=require' : '?sslmode=require';
+}
+
 const db = knex({
     client: 'pg',
-    connection: process.env.POSTGRES_URL + "?sslmode=require",
+    connection: connectionString,
     searchPath: ['knex', 'public'],
+    pool: {
+        min: 0,
+        max: 1, // Vercel serverless functions should use minimal connections
+    },
 });
 
 async function initDb() {
