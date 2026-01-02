@@ -1,3 +1,7 @@
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env.local') });
+require('dotenv').config(); // standard .env fallback
+
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -120,7 +124,7 @@ app.get('/api/v1/characters/:region/:realm/:name', async (req, res) => {
 
         res.json({
             ...character,
-            raw_data: JSON.parse(character.raw_data)
+            raw_data: typeof character.raw_data === 'string' ? JSON.parse(character.raw_data) : character.raw_data
         });
     } catch (error) {
         logger.logError('Lookup Error (GET /characters/:region/:realm/:name)', error, { region, realm, name });

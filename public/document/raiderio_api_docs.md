@@ -95,4 +95,4 @@ The API typically returns headers to help you manage your request volume:
 ## Best Practices
 - **Realms**: Always use "slug" format (e.g., `twisting-nether`) for better reliability.
 - **Fields**: The `fields` parameter is powerful; chain multiple data points (e.g., `fields=gear,raid_progression`) to minimize the total number of API calls and stay within your rate limits.
-- **Caching**: Implement local caching (like the SQLite backbone in this project) to reduce redundant calls to the live API.
+- **Caching**: Implement local caching (like the PostgreSQL backbone in this project) to reduce redundant calls to the live API.

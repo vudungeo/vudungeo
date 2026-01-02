@@ -4,7 +4,7 @@ async function fixTimestamps() {
     console.log('Starting migration: Adjusting existing timestamps to GMT+3...');
 
     // Directly use SQL to update the created_at column by adding 3 hours
-    // SQLite's datetime function is perfect for this.
+    // PostgreSQL's datetime functions can be used for this.
     try {
         const updatedCount = await db('characters')
             .update({
