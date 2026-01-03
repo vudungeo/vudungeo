@@ -6,7 +6,7 @@
         },
         {
             "source": "/api/:path*",
-            "destination": "https://raider.io/api/:path*"
+            "destination": "https://raider.io/:path*"
         },
         {
             "source": "/((?!api/).*)",
