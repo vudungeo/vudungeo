@@ -16,5 +16,5 @@ export const API = {
 
 export const LOCAL_API = {
     BASE_URL: '/local',
-    CHARACTERS_PATH: '/api/v1/characters'
+    CHARACTERS_PATH: '/v1/characters'
 };
